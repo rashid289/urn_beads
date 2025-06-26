@@ -1,0 +1,83 @@
+---
+title: "Proportion of red beads"
+author: "Rashid Abbasi"
+format: html
+execute: 
+  echo: false     # Hide the code itself
+  message: false  # Hide messages
+---
+ 
+```{r}
+#| message: false
+library(tidyverse)
+library(tidymodels)
+library(broom)
+library(knitr)
+library(marginaleffects)
+```
+
+```{r}
+shovel <- tibble(color = factor(c(rep("red", 400), rep("white", 600))))
+                                                     
+```
+
+```{r}
+#| cache: true
+fit_color <- logistic_reg(engine = "glm") |> fit(color ~ 1, data = shovel)
+```
+
+
+
+```{r}
+predictions <- plot_predictions(fit_color, type = "prob", condition = "color", draw = FALSE)
+```
+
+```{r}
+# Filter the predictions to include only white beads
+predictions_red <- predictions %>%
+  filter(color == "red")
+```
+
+```{r}
+# Plotting the predicted probabilities for white beads only
+ggplot(predictions_red, aes(x = color, y = estimate, fill = color)) + 
+  geom_bar(stat = "identity", color = "black") +
+  labs(
+    title = "Probability of Red Beads Based on Logistic Regression",
+    subtitle = "As we adjust the model, we see the likelihood of a beads being red",
+    caption = "Data: Simulated urn with 1,000 beads",
+    x = "Beads Type (Red)",
+    y = "Predicted Probability of Red Beads"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold", size = 16),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(size = 10, face = "italic"),
+    axis.title = element_text(size = 12, face = "bold"),
+    axis.text = element_text(size = 10)
+  ) 
+```
+
+
+A common task in statistics is to estimate proportions, especially when analyzing categorical data. In this case, we simulate an urn containing 1,000 beads to examine the proportion of red beads.
+
+A potential weakness of our model maybe that our sample may not truly be representative of the population.
+
+$$
+\log \left( \frac{\rho}{1-\rho} \right) = \beta_0 + \beta_1 X_1 + \beta_2 X_2
+$$
+
+Where the estimated coefficients are:
+
+
+```{r}
+# Extracting the relevant columns (estimate, conf.low, conf.high) from tidy output
+model_results <- tidy(fit_color, conf.int = TRUE) %>%
+  select(term, estimate, conf.low, conf.high)
+
+# Create the table
+kable(model_results, col.names = c("Term", "Estimate", "Lower CI", "Upper CI"), 
+      caption = "Logistic Regression Coefficients with Confidence Intervals")
+
+```
