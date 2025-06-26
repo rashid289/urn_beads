@@ -1,0 +1,9 @@
+[
+  {
+    "objectID": "urn_simulation.html",
+    "href": "urn_simulation.html",
+    "title": "Proportion of red beads",
+    "section": "",
+    "text": "A common task in statistics is to estimate proportions, especially when analyzing categorical data. In this case, we simulate an urn containing 1,000 beads to examine the proportion of red beads.\nA potential weakness of our model maybe that our sample may not truly be representative of the population.\n\\[\n\\log \\left( \\frac{\\rho}{1-\\rho} \\right) = \\beta_0 + \\beta_1 X_1 + \\beta_2 X_2\n\\]\nWhere the estimated coefficients are:\n\n\n\nLogistic Regression Coefficients with Confidence Intervals\n\n\nTerm\nEstimate\nLower CI\nUpper CI\n\n\n\n\n(Intercept)\n0.4054651\n0.2794416\n0.5325578"
+  }
+]
